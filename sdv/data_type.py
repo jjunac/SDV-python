@@ -1,0 +1,3 @@
+INT = 0
+FLOAT = 1
+CATEGORICAL = 2
