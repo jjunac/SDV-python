@@ -15,8 +15,6 @@ def syn(metadata, data, size=1):
     processed_data = __preprocess(helpers, data)
 
     # Computing covariance
-    # y = [[helpers[column].gaussian_copula(value) for column, value in enumerate(row)] for row in processed_data]
-    # cov_matrix = np.cov(y, rowvar=False)
     cov_matrix = np.corrcoef(processed_data, rowvar=False)
 
     # Sampling
@@ -30,6 +28,19 @@ def syn(metadata, data, size=1):
 
     return postprocessed_results
 
+def syn_by_class(metadata, data, class_column, size=1):
+    categorical_helper = CategoricalHelper([row[class_column] for row in data])
+    metadata_wo_cat = metadata[0:class_column] + metadata[class_column+1:len(metadata)]
+    class_draws = [categorical_helper.draw_a_class() for _ in range(size)]
+    counter = Counter(class_draws)
+    res = []
+    for clazz, n in dict(counter).items():
+        sample = [e[0:class_column] + e[class_column+1:len(e)] for e in data if e[class_column] == clazz]
+        res_for_class = syn(metadata_wo_cat, sample, size=n)
+        for row in res_for_class:
+            row.insert(class_column, clazz)
+        res.extend(res_for_class)
+    return res
 
 def __compute_helpers(metadata, data):
     helpers = []

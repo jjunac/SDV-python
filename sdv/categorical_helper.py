@@ -1,5 +1,6 @@
 from collections import Counter
 from scipy import stats
+import random
 
 
 class CategoricalHelper:
@@ -21,6 +22,9 @@ class CategoricalHelper:
         normalised_min = (bounds[0] - mean) / variance
         normalised_max = (bounds[1] - mean) / variance
         return stats.truncnorm.rvs(normalised_min, normalised_max, loc=mean, scale=variance)
+
+    def draw_a_class(self):
+        return self.postprocess(random.random())
 
     def gaussian_copula(self, x):
         return stats.norm.ppf(stats.uniform.cdf(x))
