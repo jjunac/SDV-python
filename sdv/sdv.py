@@ -6,6 +6,7 @@ from collections import Counter
 
 from sdv.categorical_helper import CategoricalHelper
 from sdv.float_helper import FloatHelper
+from sdv.int_helper import IntHelper
 
 
 def syn(metadata, data, size=1):
@@ -42,7 +43,8 @@ def __compute_helpers(metadata, data):
             float_sample = list(map(float, sample))
             helpers.append(FloatHelper(float_sample))
         elif type == dt.INT:
-            raise RuntimeError("Not implemented yet")
+            int_sample = list(map(int, sample))
+            helpers.append(IntHelper(int_sample))
         else:
             raise RuntimeError("Unknown type")
     return helpers
