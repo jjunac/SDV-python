@@ -1,5 +1,7 @@
 library(ggplot2)
 library(ggpubr)
+library(rpart)
+library(rpart.plot)
 
 df <- read.csv("iris.data", 
                  header = FALSE,
@@ -107,7 +109,18 @@ p4 <- ggplot(all, aes(x=V4, colour=set)) +
   facet_wrap(~V5)
 ggarrange(p1, p2, p3, p4)
 
+readline("Press <return to continue")
 
+ofit <- rpart(V5 ~ V1 + V2 + V3 + V4,
+              method="class", data=df)
+sfit <- rpart(V5 ~ V1 + V2 + V3 + V4,
+              method="class", data=sds)
+
+par(mfrow = c(1,2))
+par(mar=c(1,1,1,1))
+
+rpart.plot(ofit)
+rpart.plot(sfit)
 
 
 
