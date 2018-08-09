@@ -16,5 +16,5 @@ class IntHelper:
     def preprocess(self, arr):
         return np.array([int(float(x)) if x else 0 for x in arr])
 
-    def postprocess(self, x):
-        return int(round(x))
+    def postprocess(self, arr):
+        return np.around(arr).astype(np.int)

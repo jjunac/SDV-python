@@ -105,4 +105,8 @@ def __preprocess(helpers, ndata):
 
 
 def __postprocess(helpers, generated_data):
-    return [[helpers[column].postprocess(value) for column, value in enumerate(row)] for row in generated_data]
+    # Apply the helper's post-process function on all the values of the corresponding row
+    helper_iter = iter(helpers)
+    def apply_helper(col):
+        return next(helper_iter).postprocess(col)
+    return np.apply_along_axis(apply_helper, 0, generated_data)

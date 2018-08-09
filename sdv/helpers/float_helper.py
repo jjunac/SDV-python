@@ -33,8 +33,8 @@ class FloatHelper:
     def preprocess(self, arr):
         return np.array([float(x) if x else 0.0 for x in arr])
 
-    def postprocess(self, x):
-        return x
+    def postprocess(self, arr):
+        return arr
 
     def __compute_distributions(self, sample):
         res = {}
