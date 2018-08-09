@@ -12,11 +12,12 @@ logging.basicConfig(format='%(asctime)s\t[%(levelname)-5s] %(message)s', datefmt
 
 
 def syn(metadata, data, size=1, header=None):
+    ndata = np.array(data)
     # Pre-processing
     logging.info("Analyzing distributions")
     helpers = __compute_helpers(metadata, data, header)
     logging.info("Pre-processing")
-    processed_data = __preprocess(helpers, data)
+    processed_data = __preprocess(helpers, ndata)
 
     # Computing Pearson correlation coefficient matrix
     logging.info("Computing Pearson correlation coefficient matrix")
@@ -26,9 +27,9 @@ def syn(metadata, data, size=1, header=None):
 
     # Sampling
     logging.info("Generating %d rows" % size)
-    randoms = [np.random.normal(size=len(metadata)) for _ in range(size)]
+    randoms = np.array([np.random.normal(size=len(metadata)) for _ in range(size)])
     logging.info("Applying correlation factors")
-    samples = [np.dot(l, v) for v in randoms]
+    samples = np.apply_along_axis(lambda v: np.dot(l, v), 1, randoms)
 
     # Convert back to original space and post-process
     logging.info("Converting data back to original space")
@@ -95,8 +96,12 @@ def __compute_helpers(metadata, data, header=None):
     return helpers
 
 
-def __preprocess(helpers, data):
-    return [[helpers[column].preprocess(value) for column, value in enumerate(row)] for row in data]
+def __preprocess(helpers, ndata):
+    # Apply the helper's pre-process function on all the values of the corresponding row
+    helper_iter = iter(helpers)
+    def apply_helper(col):
+        return np.vectorize(next(helper_iter).preprocess)(col)
+    return np.apply_along_axis(apply_helper, 0, ndata)
 
 
 def __postprocess(helpers, generated_data):
