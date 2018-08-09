@@ -1,6 +1,7 @@
 import logging
 from collections import Counter
 from datetime import datetime
+import time
 
 import numpy as np
 
@@ -24,11 +25,13 @@ def syn(metadata, data, size=1, header=None):
     l = np.linalg.cholesky(cov_matrix)
 
     # Sampling
-    logging.info("Synthesizing %d rows" % size)
+    logging.info("Generating %d rows" % size)
     randoms = [np.random.normal(size=len(metadata)) for _ in range(size)]
+    logging.info("Applying correlation factors")
     samples = [np.dot(l, v) for v in randoms]
 
     # Convert back to original space and post-process
+    logging.info("Converting data back to original space")
     results = [[helpers[column].inverse_gaussian_copula(value) for column, value in enumerate(row)] for row in samples]
     logging.info("Post-processing")
     postprocessed_results = __postprocess(helpers, results)

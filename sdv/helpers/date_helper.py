@@ -18,4 +18,4 @@ class DateHelper:
         return datetime.toordinal(datetime.strptime(x, "%Y-%m-%d"))
 
     def postprocess(self, x):
-        return datetime.strftime(datetime.fromordinal(x), "%Y-%m-%d")
+        return datetime.strftime(datetime.fromordinal(int(round(x))), "%Y-%m-%d")

@@ -5,18 +5,13 @@ class UniformDistribution:
         # We introduce 1% of "error" to avoid problem with limit cases
         self.min = min - min * 0.01
         self.max = max + max * 0.01
+        self.scale = self.max - self.min
 
     def draw(self):
-        return self.__denormalise(stats.uniform.rvs())
+        return stats.uniform.rvs(loc=self.min, scale=self.scale)
 
     def cdf(self, x):
-        return stats.uniform.cdf(self.__normalise(x))
+        return stats.uniform.cdf(x, loc=self.min, scale=self.scale)
 
     def inverse_cdf(self, p):
-        return self.__denormalise(stats.uniform.ppf(p, self.min, self.max))
-
-    def __denormalise(self, x):
-        return self.min + x * (self.max - self.min)
-
-    def __normalise(self, x):
-        return (-self.min + x) / (self.max - self.min)
+        return stats.uniform.ppf(p, loc=self.min, scale=self.scale)

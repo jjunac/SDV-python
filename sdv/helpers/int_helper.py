@@ -16,4 +16,4 @@ class IntHelper:
         return int(float(x if x else 0))
 
     def postprocess(self, x):
-        return round(x)
+        return int(round(x))
