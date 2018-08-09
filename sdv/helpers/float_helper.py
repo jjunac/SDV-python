@@ -2,6 +2,7 @@ import logging
 import warnings
 
 from scipy import stats
+import numpy as np
 
 from sdv.distributions import *
 
@@ -29,8 +30,8 @@ class FloatHelper:
     def inverse_gaussian_copula(self, x):
         return self.distribution.inverse_cdf(stats.norm.cdf(x))
 
-    def preprocess(self, x):
-        return float(x)
+    def preprocess(self, arr):
+        return np.array([float(x) if x else 0.0 for x in arr])
 
     def postprocess(self, x):
         return x

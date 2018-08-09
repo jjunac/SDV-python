@@ -100,7 +100,7 @@ def __preprocess(helpers, ndata):
     # Apply the helper's pre-process function on all the values of the corresponding row
     helper_iter = iter(helpers)
     def apply_helper(col):
-        return np.vectorize(next(helper_iter).preprocess)(col)
+        return next(helper_iter).preprocess(col)
     return np.apply_along_axis(apply_helper, 0, ndata)
 
 

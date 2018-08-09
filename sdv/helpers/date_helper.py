@@ -1,4 +1,5 @@
 from datetime import datetime
+import numpy as np
 
 from sdv.helpers.int_helper import IntHelper
 
@@ -14,8 +15,8 @@ class DateHelper:
     def inverse_gaussian_copula(self, x):
         return self.int_helper.inverse_gaussian_copula(x)
 
-    def preprocess(self, x):
-        return datetime.toordinal(datetime.strptime(x, "%Y-%m-%d"))
+    def preprocess(self, arr):
+        return np.array([datetime.toordinal(datetime.strptime(x, "%Y-%m-%d")) for x in arr])
 
     def postprocess(self, x):
         return datetime.strftime(datetime.fromordinal(int(round(x))), "%Y-%m-%d")
