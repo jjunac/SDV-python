@@ -105,7 +105,7 @@ def __preprocess(helpers, ndata):
 
 
 def __postprocess(helpers, generated_data):
-    return [[helpers[column].postprocess(value) for column, value in enumerate(row)] for row in generated_data]
+    return __apply_helpers(helpers, generated_data, lambda h, col: h.postprocess(col))
 
 
 def __apply_helpers(helpers, ndata, helper_func):

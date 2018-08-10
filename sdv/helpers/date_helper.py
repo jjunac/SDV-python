@@ -18,5 +18,5 @@ class DateHelper:
     def preprocess(self, arr):
         return np.array([datetime.toordinal(datetime.strptime(x, "%Y-%m-%d")) for x in arr])
 
-    def postprocess(self, x):
-        return datetime.strftime(datetime.fromordinal(int(round(x))), "%Y-%m-%d")
+    def postprocess(self, arr):
+        return np.array([datetime.strftime(datetime.fromordinal(int(round(x))), "%Y-%m-%d") for x in arr])

@@ -45,8 +45,10 @@ class CategoricalHelper:
     def preprocess(self, arr):
         return np.array([self.draws[x].pop() for x in arr])
 
-    def postprocess(self, x):
-        for clazz, bounds in self.bounds.items():
-            if bounds[0] <= x < bounds[1]:
-                return clazz
-        raise RuntimeError('No corresponding class found')
+    def postprocess(self, arr):
+        def find_class(x):
+            for clazz, bounds in self.bounds.items():
+                if bounds[0] <= x < bounds[1]:
+                    return clazz
+            raise RuntimeError('No corresponding class found')
+        return np.array(list(map(find_class, arr)))
