@@ -5,10 +5,17 @@ import random
 import numpy as np
 
 
+PRECISION_BACKTRACKING_MAP = 6
+
+DELTA_BACKTRACKING_MAP = 5 * 10**-(PRECISION_BACKTRACKING_MAP+1)
+STEP_BACKTRACKING_MAP = 10**-PRECISION_BACKTRACKING_MAP
+
+
 class CategoricalHelper:
     def __init__(self, sample, column_name):
         self.bounds = {}
         self.draws = {}
+        self.class_finder = {}
 
         # We analyze frequency of every class and allocate them a range in the [0, 1) segment,
         # as described in the Synthetic Data Vault Paper
@@ -16,10 +23,18 @@ class CategoricalHelper:
         cumulative_probability = 0
         for clazz, nb in counter.most_common():
             p = nb / len(sample)
-            self.bounds[clazz] = (cumulative_probability, cumulative_probability + p)
-            cumulative_probability += p
+            max_bound = cumulative_probability + p
+            self.bounds[clazz] = (cumulative_probability, max_bound)
             # For performance issues, we are anticipating the pre-processing draws
             self.draws[clazz] = self.draw_for_class(clazz, size=nb).tolist() if nb > 1 else [self.draw_for_class(clazz)]
+            # For performance issues, we generating a map to improve class backtracking
+            q = np.around(cumulative_probability + DELTA_BACKTRACKING_MAP, PRECISION_BACKTRACKING_MAP)
+            while q < max_bound:
+                self.class_finder[q] = clazz
+                q = np.around(q + STEP_BACKTRACKING_MAP, PRECISION_BACKTRACKING_MAP)
+
+            cumulative_probability += p
+
         logging.debug("Range for %s are %s" % (column_name, str(self.bounds)))
 
     def draw_for_class(self, clazz, size=1):
@@ -47,8 +62,9 @@ class CategoricalHelper:
 
     def postprocess(self, arr):
         def find_class(x):
-            for clazz, bounds in self.bounds.items():
-                if bounds[0] <= x < bounds[1]:
-                    return clazz
-            raise RuntimeError('No corresponding class found')
+            c1 = self.class_finder[np.round(x - DELTA_BACKTRACKING_MAP, PRECISION_BACKTRACKING_MAP)]
+            c2 = self.class_finder[np.round(x + DELTA_BACKTRACKING_MAP, PRECISION_BACKTRACKING_MAP)]
+            if c1 == c2 or x < self.bounds[c1][1]:
+                return c1
+            return c2
         return np.array(list(map(find_class, arr)))
