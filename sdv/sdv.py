@@ -51,7 +51,7 @@ def syn_by_class(metadata, data, class_column, size=1, header=None):
 
     # Synthesize the class values that we'll use to determine the other values
     logging.info("Drawing %s values" % class_name)
-    class_draws = [categorical_helper.draw_a_class() for _ in range(size)]
+    class_draws = categorical_helper.draw_class(size=size)
     # Count the occurrence of a value
     counter = Counter(class_draws)
     # Remove the class from the metadata and header, so that we can synthesize the other value

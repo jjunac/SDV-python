@@ -25,7 +25,7 @@ with open("syn_train_users.csv", "w", newline='') as out_file:
                 sdv.CATEGORICAL, sdv.CATEGORICAL, sdv.CATEGORICAL, sdv.CATEGORICAL,
                 sdv.CATEGORICAL, sdv.FLOAT, sdv.FLOAT, sdv.FLOAT, sdv.FLOAT, sdv.CATEGORICAL,
                 sdv.FLOAT, sdv.CATEGORICAL, sdv.CATEGORICAL, sdv.FLOAT, sdv.CATEGORICAL]
-    sds = sdv.syn(metadata, ods, size=20000)
+    sds = sdv.syn_by_class(metadata, ods, 15, size=20000)
 
     iris_writer = csv.writer(out_file)
     iris_writer.writerows(sds)

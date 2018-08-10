@@ -37,8 +37,9 @@ class CategoricalHelper:
         res = stats.truncnorm.rvs(normalised_min, normalised_max, loc=mean, scale=variance, size=size)
         return res if size > 1 else res[0]
 
-    def draw_a_class(self):
-        return self.postprocess(random.random())
+    def draw_class(self, size=1):
+        res = self.postprocess(stats.uniform.rvs(size=size))
+        return res if size > 1 else res[0]
 
     def gaussian_copula(self, arr):
         return stats.norm.ppf(stats.uniform.cdf(arr))
