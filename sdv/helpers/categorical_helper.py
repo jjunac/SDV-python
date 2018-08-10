@@ -3,12 +3,14 @@ from collections import Counter
 from scipy import stats
 import random
 import numpy as np
-
+import bisect
 
 class CategoricalHelper:
     def __init__(self, sample, column_name):
         self.bounds = {}
         self.draws = {}
+        self.lower_bounds = []
+        self.decreasing_order = []
 
         # We analyze frequency of every class and allocate them a range in the [0, 1) segment,
         # as described in the Synthetic Data Vault Paper
@@ -16,6 +18,8 @@ class CategoricalHelper:
         cumulative_probability = 0
         for clazz, nb in counter.most_common():
             p = nb / len(sample)
+            self.lower_bounds.append(cumulative_probability)
+            self.decreasing_order.append(clazz)
             self.bounds[clazz] = (cumulative_probability, cumulative_probability + p)
             cumulative_probability += p
             # For performance issues, we are anticipating the pre-processing draws
@@ -46,9 +50,4 @@ class CategoricalHelper:
         return np.array([self.draws[x].pop() for x in arr])
 
     def postprocess(self, arr):
-        def find_class(x):
-            for clazz, bounds in self.bounds.items():
-                if bounds[0] <= x < bounds[1]:
-                    return clazz
-            raise RuntimeError('No corresponding class found')
-        return np.array(list(map(find_class, arr)))
+        return np.array([self.decreasing_order[bisect.bisect_right(self.lower_bounds, x)-1] for x in arr])
