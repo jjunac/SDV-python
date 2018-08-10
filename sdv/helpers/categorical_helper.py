@@ -36,11 +36,11 @@ class CategoricalHelper:
     def draw_a_class(self):
         return self.postprocess(random.random())
 
-    def gaussian_copula(self, x):
-        return stats.norm.ppf(stats.uniform.cdf(x))
+    def gaussian_copula(self, arr):
+        return stats.norm.ppf(stats.uniform.cdf(arr))
 
-    def inverse_gaussian_copula(self, x):
-        return stats.norm.cdf(x)
+    def inverse_gaussian_copula(self, arr):
+        return stats.norm.cdf(arr)
 
     def preprocess(self, arr):
         return np.array([self.draws[x].pop() for x in arr])

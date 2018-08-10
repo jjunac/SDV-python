@@ -24,11 +24,11 @@ class FloatHelper:
         elif best_distrib == "beta":
             self.distribution = BetaDistribution(*distributions[best_distrib]['args'])
 
-    def gaussian_copula(self, x):
-        return stats.norm.ppf(self.distribution.cdf(x))
+    def gaussian_copula(self, arr):
+        return stats.norm.ppf(self.distribution.cdf(arr))
 
-    def inverse_gaussian_copula(self, x):
-        return self.distribution.inverse_cdf(stats.norm.cdf(x))
+    def inverse_gaussian_copula(self, arr):
+        return self.distribution.inverse_cdf(stats.norm.cdf(arr))
 
     def preprocess(self, arr):
         return np.array([float(x) if x else 0.0 for x in arr])

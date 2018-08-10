@@ -12,6 +12,7 @@ logging.basicConfig(format='%(asctime)s\t[%(levelname)-5s] %(message)s', datefmt
 
 
 def syn(metadata, data, size=1, header=None):
+    stime = time.time()
     ndata = np.array(data)
     # Pre-processing
     logging.info("Analyzing distributions")
@@ -27,16 +28,18 @@ def syn(metadata, data, size=1, header=None):
 
     # Sampling
     logging.info("Generating %d rows" % size)
-    randoms = np.array([np.random.normal(size=len(metadata)) for _ in range(size)])
+    randoms = np.random.normal(size=(size, len(metadata)))
     logging.info("Applying correlation factors")
     samples = np.apply_along_axis(lambda v: np.dot(l, v), 1, randoms)
 
     # Convert back to original space and post-process
     logging.info("Converting data back to original space")
-    results = [[helpers[column].inverse_gaussian_copula(value) for column, value in enumerate(row)] for row in samples]
+    results = __apply_helpers(helpers, samples, lambda h, col: h.inverse_gaussian_copula(col))
     logging.info("Post-processing")
     postprocessed_results = __postprocess(helpers, results)
 
+    ttime = int(time.time() - stime)
+    logging.info("Synthesized %s rows in %dh%02dm%02ds" % (size, ttime//3600, (ttime//60) % 60, ttime % 60))
     return postprocessed_results
 
 
@@ -98,11 +101,22 @@ def __compute_helpers(metadata, data, header=None):
 
 def __preprocess(helpers, ndata):
     # Apply the helper's pre-process function on all the values of the corresponding row
-    helper_iter = iter(helpers)
-    def apply_helper(col):
-        return next(helper_iter).preprocess(col)
-    return np.apply_along_axis(apply_helper, 0, ndata)
+    return __apply_helpers(helpers, ndata, lambda h, col: h.preprocess(col))
 
 
 def __postprocess(helpers, generated_data):
     return [[helpers[column].postprocess(value) for column, value in enumerate(row)] for row in generated_data]
+
+
+def __apply_helpers(helpers, ndata, helper_func):
+    """
+    Function that apply a helper operation over the row of a table
+    :param helpers: the helper list
+    :param ndata: the data to process
+    :param helper_func: a function that take a helper and a row of the table and return the processed data
+    :return: the processed table
+    """
+    helper_iter = iter(helpers)
+    def apply_helper(col):
+        return helper_func(next(helper_iter), col)
+    return np.apply_along_axis(apply_helper, 0, ndata)

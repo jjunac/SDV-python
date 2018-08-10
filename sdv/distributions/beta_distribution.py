@@ -11,8 +11,8 @@ class BetaDistribution:
     def draw(self):
         return stats.beta.rvs(self.a, self.b, loc=self.mean, scale=self.variance)
 
-    def cdf(self, x):
-        return stats.beta.cdf(x, self.a, self.b, loc=self.mean, scale=self.variance)
+    def cdf(self, arr):
+        return stats.beta.cdf(arr, self.a, self.b, loc=self.mean, scale=self.variance)
 
-    def inverse_cdf(self, x):
-        return stats.beta.ppf(x, self.a, self.b, loc=self.mean, scale=self.variance)
+    def inverse_cdf(self, arr):
+        return stats.beta.ppf(arr, self.a, self.b, loc=self.mean, scale=self.variance)

@@ -9,8 +9,8 @@ class ExponentialDistribution:
     def draw(self):
         return stats.expon.rvs(loc=self.mean, scale=self.variance)
 
-    def cdf(self, x):
-        return stats.expon.cdf(x, loc=self.mean, scale=self.variance)
+    def cdf(self, arr):
+        return stats.expon.cdf(arr, loc=self.mean, scale=self.variance)
 
-    def inverse_cdf(self, x):
-        return stats.expon.ppf(x, loc=self.mean, scale=self.variance)
+    def inverse_cdf(self, arr):
+        return stats.expon.ppf(arr, loc=self.mean, scale=self.variance)

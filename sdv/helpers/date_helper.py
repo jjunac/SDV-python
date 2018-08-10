@@ -9,11 +9,11 @@ class DateHelper:
     def __init__(self, sample, column_name):
         self.int_helper = IntHelper(list(map(datetime.toordinal, sample)), column_name)
 
-    def gaussian_copula(self, x):
-        return self.int_helper.gaussian_copula(x)
+    def gaussian_copula(self, arr):
+        return self.int_helper.gaussian_copula(arr)
 
-    def inverse_gaussian_copula(self, x):
-        return self.int_helper.inverse_gaussian_copula(x)
+    def inverse_gaussian_copula(self, arr):
+        return self.int_helper.inverse_gaussian_copula(arr)
 
     def preprocess(self, arr):
         return np.array([datetime.toordinal(datetime.strptime(x, "%Y-%m-%d")) for x in arr])

@@ -10,8 +10,8 @@ class UniformDistribution:
     def draw(self):
         return stats.uniform.rvs(loc=self.min, scale=self.scale)
 
-    def cdf(self, x):
-        return stats.uniform.cdf(x, loc=self.min, scale=self.scale)
+    def cdf(self, arr):
+        return stats.uniform.cdf(arr, loc=self.min, scale=self.scale)
 
-    def inverse_cdf(self, p):
-        return stats.uniform.ppf(p, loc=self.min, scale=self.scale)
+    def inverse_cdf(self, arr):
+        return stats.uniform.ppf(arr, loc=self.min, scale=self.scale)

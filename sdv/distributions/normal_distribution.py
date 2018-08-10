@@ -15,8 +15,8 @@ class NormalDistribution:
     def draw(self):
         return stats.truncnorm.rvs(self.normalised_min, self.normalised_max, loc=self.mean, scale=self.variance)
 
-    def cdf(self, x):
-        return stats.truncnorm.cdf(x, self.normalised_min, self.normalised_max, loc=self.mean, scale=self.variance)
+    def cdf(self, arr):
+        return stats.truncnorm.cdf(arr, self.normalised_min, self.normalised_max, loc=self.mean, scale=self.variance)
 
-    def inverse_cdf(self, x):
-        return stats.truncnorm.ppf(x, self.normalised_min, self.normalised_max, loc=self.mean, scale=self.variance)
+    def inverse_cdf(self, arr):
+        return stats.truncnorm.ppf(arr, self.normalised_min, self.normalised_max, loc=self.mean, scale=self.variance)
