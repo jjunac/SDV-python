@@ -12,6 +12,7 @@ logging.basicConfig(format='%(asctime)s\t[%(levelname)-5s] %(message)s', datefmt
 
 
 def syn(metadata, data, size=1, header=None):
+    stime = time.time()
     # Pre-processing
     logging.info("Analyzing distributions")
     helpers = __compute_helpers(metadata, data, header)
@@ -36,6 +37,8 @@ def syn(metadata, data, size=1, header=None):
     logging.info("Post-processing")
     postprocessed_results = __postprocess(helpers, results)
 
+    ttime = int(time.time() - stime)
+    logging.info("Synthesized %s rows in %dh%02dm%02ds" % (size, ttime // 3600, (ttime // 60) % 60, ttime % 60))
     return postprocessed_results
 
 
